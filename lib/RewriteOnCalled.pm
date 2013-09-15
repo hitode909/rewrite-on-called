@@ -38,7 +38,7 @@ sub register {
             } $_->children;
         } @{$doc->find('PPI::Statement')};
 
-        my ($part1, $part2) = $self->_extract_part($statement, $method);
+        my ($part1, $part2) = $self->_extract_part($statement, $module, $method);
 
         my $comment_out = ($statement =~ s/^/# /rgm) . "\n";
         my $comment_out_doc = PPI::Document->new(\$comment_out);
@@ -69,7 +69,9 @@ sub dump {
 
 # <part1>method(   )<part2>
 sub _extract_part {
-    my ($self, $statement, $method) = @_;
+    my ($self, $statement, $module, $method) = @_;
+
+    my $module_method = "$module\::$method";
 
     my ($part1, $part2, $method_found, $paren_stack, $paren_found) = ('', '', 0, 0, 0);
 
@@ -87,7 +89,7 @@ sub _extract_part {
                 }
             }
         } else {
-            if ($token eq $method) {
+            if ($token eq $method || $token eq $module_method) {
                 $method_found = 1;
             } else {
                 $part1 .= $token;
