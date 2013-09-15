@@ -23,7 +23,9 @@ sub register {
     no strict 'refs';
     no warnings qw/redefine prototype/;
 
-    *{"$module\::$method"} = sub {
+    my $module_method = "$module\::$method";
+
+    *{$module_method} = sub {
         my @caller = caller(0);
         my $file_name = $caller[1];
         my $line_number = $caller[2];
@@ -32,7 +34,7 @@ sub register {
 
         my $statement = first {
             any {
-                $_ eq $method && $_->line_number == $line_number;
+                ($_ eq $method || $_ eq $module_method) && $_->line_number == $line_number;
             } $_->children;
         } @{$doc->find('PPI::Statement')};
 
