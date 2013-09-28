@@ -4,6 +4,7 @@
 - Register method name and callback. When the method is called, callback will be called.
 - Arguments are passed to callback. Use it to replae legacy method calling.
 - Useful for Refactoring.
+- Better solution: https://github.com/hitode909/replace-method-call
 
 ## Examples
 
